@@ -14,39 +14,19 @@ COLS = ["Raw count","Abilities","Items","Spreads","Moves","Teammates","Checks an
 # Teammates {teammate:count}
 # Checks and Counters {check/counter:[count appeared on opposite teams, ko/force switch out %, std]}
 
-def get_pokemon_info():
-    with open(os.path.join("data","raw","chaos","gen9vgc2025regg-1760.json"), "r") as file:
+def get_pokemon_info(pokemon_name=None, format="gen9vgc2025regg-1760"):
+    if pokemon_name is None:
+        print("Must enter a pokemon name")
+        return None
+    
+    with open(os.path.join("data","raw","chaos",f"{format}.json"), "r") as file:
         data = json.load(file)
     
-    pokemon_name = "Urshifu-Rapid-Strike"
     pokemon_data = data['data'].get(pokemon_name)
 
     if pokemon_data:
-        print(f"data for {pokemon_name}:\n")
-        for key, val in pokemon_data.items():
-            print(f"{key}: {val}")
-    else:
-        print("No data")
+        return pokemon_data
+    print("Either there's no data about this pokemon or you have entered their name in the wrong format")
+    return None
 
-def sort_by_usage(format="gen9vgc2025regg-1760"):
-    # Load the Chaos JSON file
-    with open(os.path.join("data","raw","chaos",f"{format}.json"), "r") as file:
-        data = json.load(file)
-
-    # Get the full data dictionary
-    pokemon_stats = data["data"]
-
-    # Sort by 'usage' in descending order
-    sorted_pokemon = sorted(
-        pokemon_stats.items(),
-        key=lambda item: item[1].get("usage", 0),
-        reverse=True
-    )
-
-    # Extract the top 100
-    top_100 = sorted_pokemon[:100]
-
-    # Print them out nicely
-    for (name, stats) in top_100:
-        pass
-sort_by_usage()
+info = get_pokemon_info("Infernape")
