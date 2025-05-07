@@ -107,8 +107,12 @@ def write_mon_data(name, df):
         mon_data.append(stats[stat])
     df.loc[len(df)] = mon_data
     return df
-# info = get_pokemon_info("Infernape")
-get_all_mons()
-# stats, types, weight = get_pokemon_base_info("Urshifu-Rapid-Strike")
-# if len(types) > 1: types = [f"{types[0]}\{types[1]}"]
-# print(types.pop())
+
+def reverse_damage_calc(field, attacker, target, num_targets):
+    # Objects storing field info, attacker stats, weight, etc and same for target
+    # Try to find out defence of opponent
+    possible_rand_vals = [i/100 for i in range (85,101)]
+    multiplier = 1
+    multiplier *= 0.75 if num_targets > 1 else 1
+    
+    
