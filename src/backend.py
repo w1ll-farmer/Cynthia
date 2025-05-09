@@ -69,7 +69,7 @@ def get_pokemon_base_info(pokemon_name):
     weight = data["weight"]
     return stats, types, weight
 
-def get_all_mons(format="gen9vgc2025regg-1760"):
+def get_all_mons(format="gen9vgc2025regi-1760"):
     with open(os.path.join("data","raw","chaos",f"{format}.json"),"r") as file:
         data = json.load(file)
 
@@ -95,7 +95,7 @@ def get_all_mons(format="gen9vgc2025regg-1760"):
         
         df = write_mon_data(name, df)
     # myFile = open(os.path.join("data","clean","info.txt"),"a")
-    df.to_csv(os.path.join("data","clean","dex.txt"))
+    df.to_csv(os.path.join("data","dex",f"{format}.txt"))
 
 def write_mon_data(name, df):
     # mon_dict = {"name","type1","type2","weight","hp","atk","def","spatk","spdef","speed"}
@@ -115,4 +115,4 @@ def reverse_damage_calc(field, attacker, target, num_targets):
     multiplier = 1
     multiplier *= 0.75 if num_targets > 1 else 1
     
-    
+get_all_mons()
