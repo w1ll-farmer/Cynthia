@@ -2,7 +2,7 @@ import subprocess
 import json
 import time 
 def calc_damage(
-    attacker:str, defender:str, move:str, attackerItem:str, defenderItem:str, attackerNature:str, defenderNature:str,
+    attacker:str, defender:str, move:str, attackerItem:str, defenderItem:str, attackerNature:str, defenderNature:str, attackerAbility:str, defenderAbility:str,
     attackerLvl:str="50",
     defenderLvl:str="50",
     num_targets:str="1", 
@@ -13,7 +13,30 @@ def calc_damage(
     defenderHpEv:str="252",
     defenderDefenceEv:str="252",
     defenderDefendingStatBoost:str="0",
-    gen:str="9"
+    gen:str="9",
+    Weather:str="None",
+    Terrain:str="None",
+    gravityon:str="",
+    aurabreak:str="",
+    fairyaura:str="",
+    darkaura:str="",
+    beadsofruin:str="",
+    swordofruin:str="",
+    tabletsofruin:str="",
+    vesselofruin:str="",
+    defenderReflect:str="",
+    defenderLightScreen:str="",
+    defenderForesight:str="",
+    attackerTailwind:str="",
+    defenderTailwind:str="",
+    attackerHelpingHand:str="",
+    defenderAuroraVeil:str="",
+    defenderFriendGuard:str="",
+    defenderFlowerGift:str="",
+    defenderBattery:str="",
+    attackerBattery:str="",
+    attackerStatus:str="",
+    defenderStatus:str="",
     ) -> list:
     """Run JavaScript code for damage calculation
 
@@ -42,12 +65,25 @@ def calc_damage(
     """
     # Run the damage calculator
     result = subprocess.run(
-        ['node', 'js/run_calc.js', gen, attacker, defender, move, attackerItem, defenderItem, attackerNature, defenderNature, attackerLvl, defenderLvl, num_targets, attackerAttackType, attackerAttackingStatEV, attackerAttackingStatBoost, defenderDefenceType, defenderHpEv, defenderDefenceEv, defenderDefendingStatBoost],
+        ['node', 'js/run_calc.js',
+         gen, attacker, defender, move,
+         attackerItem, defenderItem, attackerNature,
+         defenderNature, attackerLvl, defenderLvl,
+         num_targets, attackerAttackType, attackerAttackingStatEV,
+         attackerAttackingStatBoost, defenderDefenceType,
+         defenderHpEv, defenderDefenceEv, defenderDefendingStatBoost,
+         attackerAbility, defenderAbility,
+         Weather, Terrain, gravityon, aurabreak, fairyaura, darkaura,
+         beadsofruin, swordofruin, tabletsofruin, vesselofruin, defenderReflect,
+         defenderLightScreen, defenderForesight, attackerTailwind, defenderTailwind,
+         attackerHelpingHand, defenderAuroraVeil, defenderFriendGuard, defenderFlowerGift, defenderBattery,
+         attackerBattery, attackerStatus, defenderStatus
+        ],
         capture_output=True, text=True
     )
     
     return result.stdout.strip()
 
 start = time.time()
-calc_damage('Garchomp', 'Togekiss', 'Stone Edge','Choice Band','Choice Scarf','Adamant','Calm')
+print(calc_damage('Garchomp', 'Togekiss', 'Stone Edge','Choice Band','Choice Scarf','Adamant','Calm', 'Rough Skin', 'Serene Grace'))
 print(time.time()-start)

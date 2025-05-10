@@ -49,3 +49,5 @@ class VGCPlayer():
         # What pokemon cant use which moves this turn
         # Field effects - incl. perish song, arena trap
         # Each pokemon's weight
+        # Is commonly checked by opponent?
+        # 
