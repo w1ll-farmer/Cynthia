@@ -65,71 +65,92 @@ if (parseInt(num_targets) == 1) {
 }
 console.log("Defined move")
 // Set field effects
+fieldEffects = new Field({
+  defenderSide: theDefenderSide,
+  attackerSide: theAttackerSide,
+  isGravity: parseBool(gravityon),
+  isAuraBeak: parseBool(aurabreak),
+  isFairyAura: parseBool(fairyaura),
+  isDarkAura: parseBool(darkaura),
+  isBeadsOfRuin: parseBool(beadsofruin),
+  isSwordOfRuin: parseBool(swordofruin),
+  isTabletsOfRuin: parseBool(tabletsofruin),
+  isVesselOfRuin: parseBool(vesselofruin),
+  gameType: 'Doubles',
+});
+
 if (Weather != "None") {
-  if (Terrain != "None") {
-    fieldEffects = new Field({
-      defenderSide: theDefenderSide,
-      attackerSide: theAttackerSide,
-      weather: Weather,
-      terrain: Terrain,
-      isGravity: parseBool(gravityon),
-      isAuraBeak: parseBool(aurabreak),
-      isFairyAura: parseBool(fairyaura),
-      isDarkAura: parseBool(darkaura),
-      isBeadsOfRuin: parseBool(beadsofruin),
-      isSwordOfRuin: parseBool(swordofruin),
-      isTabletsOfRuin: parseBool(tabletsofruin),
-      isVesselOfRuin: parseBool(vesselofruin),
-      gameType: 'Doubles',
-    });
-  } else {
-    fieldEffects = new Field({
-      defenderSide: theDefenderSide,
-      attackerSide: theAttackerSide,
-      weather: Weather,
-      isGravity: parseBool(gravityon),
-      isAuraBeak: parseBool(aurabreak),
-      isFairyAura: parseBool(fairyaura),
-      isDarkAura: parseBool(darkaura),
-      isBeadsOfRuin: parseBool(beadsofruin),
-      isSwordOfRuin: parseBool(swordofruin),
-      isTabletsOfRuin: parseBool(tabletsofruin),
-      isVesselOfRuin: parseBool(vesselofruin),
-      gameType: 'Doubles',
-    });
-  }
-} else {
-    if (Terrain != "None") {
-      fieldEffects = new Field({
-        defenderSide: theDefenderSide,
-        attackerSide: theAttackerSide,
-        terrain: Terrain,
-        isGravity: parseBool(gravityon),
-        isAuraBeak: parseBool(aurabreak),
-        isFairyAura: parseBool(fairyaura),
-        isDarkAura: parseBool(darkaura),
-        isBeadsOfRuin: parseBool(beadsofruin),
-        isSwordOfRuin: parseBool(swordofruin),
-        isTabletsOfRuin: parseBool(tabletsofruin),
-        isVesselOfRuin: parseBool(vesselofruin),
-        gameType: 'Doubles',
-      });
-    } else {
-    fieldEffects = new Field({
-        defenderSide: theDefenderSide,
-        attackerSide: theAttackerSide,
-        isGravity: parseBool(gravityon),
-        isAuraBeak: parseBool(aurabreak),
-        isFairyAura: parseBool(fairyaura),
-        isDarkAura: parseBool(darkaura),
-        isBeadsOfRuin: parseBool(beadsofruin),
-        isSwordOfRuin: parseBool(swordofruin),
-        isTabletsOfRuin: parseBool(tabletsofruin),
-        isVesselOfRuin: parseBool(vesselofruin),
-        gameType: 'Doubles',
-      });
-  }
+  fieldEffects.weather = Weather;
 }
+if (Terrain != "None") {
+  fieldEffects.terrain = Terrain;
+}
+
+// if (Weather != "None") {
+//   if (Terrain != "None") {
+//     fieldEffects = new Field({
+//       defenderSide: theDefenderSide,
+//       attackerSide: theAttackerSide,
+//       weather: Weather,
+//       terrain: Terrain,
+//       isGravity: parseBool(gravityon),
+//       isAuraBeak: parseBool(aurabreak),
+//       isFairyAura: parseBool(fairyaura),
+//       isDarkAura: parseBool(darkaura),
+//       isBeadsOfRuin: parseBool(beadsofruin),
+//       isSwordOfRuin: parseBool(swordofruin),
+//       isTabletsOfRuin: parseBool(tabletsofruin),
+//       isVesselOfRuin: parseBool(vesselofruin),
+//       gameType: 'Doubles',
+//     });
+//   } else {
+//     fieldEffects = new Field({
+//       defenderSide: theDefenderSide,
+//       attackerSide: theAttackerSide,
+//       weather: Weather,
+//       isGravity: parseBool(gravityon),
+//       isAuraBeak: parseBool(aurabreak),
+//       isFairyAura: parseBool(fairyaura),
+//       isDarkAura: parseBool(darkaura),
+//       isBeadsOfRuin: parseBool(beadsofruin),
+//       isSwordOfRuin: parseBool(swordofruin),
+//       isTabletsOfRuin: parseBool(tabletsofruin),
+//       isVesselOfRuin: parseBool(vesselofruin),
+//       gameType: 'Doubles',
+//     });
+//   }
+// } else {
+//     if (Terrain != "None") {
+//       fieldEffects = new Field({
+//         defenderSide: theDefenderSide,
+//         attackerSide: theAttackerSide,
+//         terrain: Terrain,
+//         isGravity: parseBool(gravityon),
+//         isAuraBeak: parseBool(aurabreak),
+//         isFairyAura: parseBool(fairyaura),
+//         isDarkAura: parseBool(darkaura),
+//         isBeadsOfRuin: parseBool(beadsofruin),
+//         isSwordOfRuin: parseBool(swordofruin),
+//         isTabletsOfRuin: parseBool(tabletsofruin),
+//         isVesselOfRuin: parseBool(vesselofruin),
+//         gameType: 'Doubles',
+//       });
+//     } else {
+//     fieldEffects = new Field({
+//         defenderSide: theDefenderSide,
+//         attackerSide: theAttackerSide,
+//         isGravity: parseBool(gravityon),
+//         isAuraBeak: parseBool(aurabreak),
+//         isFairyAura: parseBool(fairyaura),
+//         isDarkAura: parseBool(darkaura),
+//         isBeadsOfRuin: parseBool(beadsofruin),
+//         isSwordOfRuin: parseBool(swordofruin),
+//         isTabletsOfRuin: parseBool(tabletsofruin),
+//         isVesselOfRuin: parseBool(vesselofruin),
+//         gameType: 'Doubles',
+//       });
+//   }
+// }
 
 console.log("Defined Field");
 // Calculate damage values
