@@ -63,6 +63,7 @@ let move = new Move(gen, moveName);
 if (parseInt(num_targets) == 1) {
   move.spreadModifier = 1.0;
 }
+
 console.log("Defined move")
 // Set field effects
 fieldEffects = new Field({
@@ -174,8 +175,16 @@ const result = calculate(
   }),
   move,
   fieldEffects,
+  {targets: parseInt(num_targets)}
 );
 
-
+// console.log(parseInt(num_targets))
 // Print the result
-console.log(JSON.stringify(result.damage));
+
+let damage = result.damage;
+if (parseInt(num_targets) == 1 && fieldEffects.gameType === 'Doubles') {
+  // Manually undo the spread damage reduction
+  damage = damage.map(d => Math.round(d / 0.75));
+  console.log(damage);
+} else {console.log(JSON.stringify(result.damage));}
+

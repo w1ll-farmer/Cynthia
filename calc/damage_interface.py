@@ -5,7 +5,7 @@ def calc_damage(
     attacker:str, defender:str, move:str, attackerItem:str, defenderItem:str, attackerNature:str, defenderNature:str, attackerAbility:str, defenderAbility:str,
     attackerLvl:str="50",
     defenderLvl:str="50",
-    num_targets:str="1", 
+    num_targets:str="2", 
     attackerAttackType:str="physical",
     attackerAttackingStatEV:str="252",
     attackerAttackingStatBoost:str="0",
@@ -85,5 +85,6 @@ def calc_damage(
     return result.stdout.strip()
 
 start = time.time()
-print(calc_damage('Garchomp', 'Togekiss', 'Stone Edge','Choice Band','Choice Scarf','Adamant','Calm', 'Rough Skin', 'Serene Grace'))
+print(calc_damage('Garchomp', 'Togekiss', 'Rock Slide','Choice Band','Choice Scarf','Adamant','Calm', 'Rough Skin', 'Serene Grace', num_targets="2"))
+print(calc_damage('Garchomp', 'Togekiss', 'Rock Slide','Choice Band','Choice Scarf','Adamant','Calm', 'Rough Skin', 'Serene Grace', num_targets="1"))
 print(time.time()-start)

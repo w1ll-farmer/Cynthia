@@ -108,11 +108,3 @@ def write_mon_data(name, df):
     df.loc[len(df)] = mon_data
     return df
 
-def reverse_damage_calc(field, attacker, target, num_targets):
-    # Objects storing field info, attacker stats, weight, etc and same for target
-    # Try to find out defence of opponent
-    possible_rand_vals = [i/100 for i in range (85,101)]
-    multiplier = 1
-    multiplier *= 0.75 if num_targets > 1 else 1
-    
-get_all_mons()
