@@ -37,6 +37,10 @@ def calc_damage(
     attackerBattery:str="",
     attackerStatus:str="",
     defenderStatus:str="",
+    attackerTeraType:str="",
+    defenderTera:str="", 
+    attackerAlliesFainted:str="",
+    criticalHit:str=""
     ) -> list:
     """Run JavaScript code for damage calculation
 
@@ -77,7 +81,8 @@ def calc_damage(
          beadsofruin, swordofruin, tabletsofruin, vesselofruin, defenderReflect,
          defenderLightScreen, defenderForesight, attackerTailwind, defenderTailwind,
          attackerHelpingHand, defenderAuroraVeil, defenderFriendGuard, defenderFlowerGift, defenderBattery,
-         attackerBattery, attackerStatus, defenderStatus
+         attackerBattery, attackerStatus, defenderStatus, attackerTeraType,
+         defenderTera, attackerAlliesFainted, criticalHit
         ],
         capture_output=True, text=True
     )
@@ -85,6 +90,6 @@ def calc_damage(
     return result.stdout.strip()
 
 start = time.time()
-print(calc_damage('Garchomp', 'Togekiss', 'Rock Slide','Choice Band','Choice Scarf','Adamant','Calm', 'Rough Skin', 'Serene Grace', num_targets="2"))
-print(calc_damage('Garchomp', 'Togekiss', 'Rock Slide','Choice Band','Choice Scarf','Adamant','Calm', 'Rough Skin', 'Serene Grace', num_targets="1"))
+print(calc_damage('Garchomp', 'Togekiss', 'Rock Slide','Choice Band','Choice Scarf','Adamant','Calm', 'Rough Skin', 'Serene Grace', num_targets="2", attackerTeraType="Rock", attackerStatus="brn"))
+print(calc_damage('Garchomp', 'Togekiss', 'Rock Slide','Choice Band','Choice Scarf','Adamant','Calm', 'Rough Skin', 'Serene Grace', num_targets="2", attackerTeraType="Rock", attackerStatus="brn",criticalHit=""))
 print(time.time()-start)
