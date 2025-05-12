@@ -15,6 +15,43 @@ COLS = ["Raw count","Abilities","Items","Spreads","Moves","Teammates","Checks an
 # Teammates {teammate:count}
 # Checks and Counters {check/counter:[count appeared on opposite teams, ko/force switch out %, std]}
 
+class OpponentMon:
+    def __init__(self, name, maxHP, ability, format="gen9vgc2025regi-1760"):
+        self.name = name
+        self.maxHP = maxHP
+        self.currentHP = maxHP
+        self.isItemKnown = False
+        self.item = self.get_most_used_item(name, format)
+        self.ability = ability
+        self.attackIV = 31
+        self.speedIV = 31
+        self.hpEV = self.calc_opponent_hp_ev()
+        self.minAtkEV = 0
+        self.maxAtkEV = 252
+        self.minDefEV = 0
+        self.maxDefEV = 252
+        self.minSpaEV = 0
+        self.maxSpaEV = 252
+        self.minSpdEV = 0
+        self.maxSpdEV = 252
+        self.minSpeEV = 0
+        self.maxSpeEV = 252
+        
+    def get_mon_stat(self,mon_name, stat):
+        df = pd.read_csv(os.path.join("data","dex","gen9vgc2025regi-1760.txt"))
+        opponent = df.loc[df['name'] == mon_name, stat].values[0]
+        return opponent
+
+    def calc_opponent_hp_ev(self):
+        base_hp = self.get_mon_stat(self.name, "hp")
+        hp_ev = 4*((100*self.maxHP-6000)/50 - (2*base_hp + 31))
+        return max(0,hp_ev)
+    
+    def get_most_used_item(self, pokemon, format):
+        pkmn_data = get_pokemon_smogon_info(pokemon, format)
+        return max(pkmn_data['Items'], key=pkmn_data['Items'].get)
+        
+        
 def get_pokemon_smogon_info(pokemon_name=None, format="gen9vgc2025regg-1760"):
     if pokemon_name is None:
         print("Must enter a pokemon name")
@@ -108,3 +145,7 @@ def write_mon_data(name, df):
     df.loc[len(df)] = mon_data
     return df
 
+
+
+mon = OpponentMon("Calyrex-Shadow", 193)
+print(mon.item)
