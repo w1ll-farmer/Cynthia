@@ -1,4 +1,4 @@
-,name,types,weight,hp,atk,def,spatk,spdef,speed
+,name,types,weight,hp,atk,def,spa,spd,spe
 0,Calyrex-Shadow,psychic/ghost,536,100,85,80,165,100,150
 1,Urshifu-Rapid-Strike,fighting/water,1050,100,130,100,63,60,97
 2,Rillaboom,grass,900,100,125,90,60,70,85
