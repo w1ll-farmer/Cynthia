@@ -50,6 +50,7 @@ class OpponentMon:
         self.isActive = False
         self.isChosen = False
         self.isFainted = False
+        self.status = None
         # Assign Base Stats
         self.baseHP = self.get_mon_base_stat("hp")
         self.baseAttack = self.get_mon_base_stat("atk")
@@ -272,6 +273,8 @@ class OpponentMon:
         sorted_moves =  sorted(pkmn_data["Moves"], key=pkmn_data["Moves"].get, reverse=True)
         self.move1, self.move2, self.move3, self.move4 = sorted_moves[:4]
     
+    def reverse_damage_calc(self, damage):
+        pass
 
 mon = OpponentMon("Urshifu-Rapid-Strike")
 print(mon.baseAttack)

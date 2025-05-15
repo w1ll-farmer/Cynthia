@@ -90,6 +90,6 @@ def calc_damage(
     return result.stdout.strip()
 
 start = time.time()
-print(calc_damage('Garchomp', 'Togekiss', 'Rock Slide','Choice Band','Choice Scarf','Adamant','Calm', 'Rough Skin', 'Serene Grace', num_targets="2", attackerTeraType="Rock", attackerStatus="brn"))
-print(calc_damage('Garchomp', 'Togekiss', 'Rock Slide','Choice Band','Choice Scarf','Adamant','Calm', 'Rough Skin', 'Serene Grace', num_targets="2", attackerTeraType="Rock", attackerStatus="brn",criticalHit=""))
+print(calc_damage('Garchomp', 'Togekiss', 'Rock Slide','Choice Band','Choice Scarf','Adamant','Calm', 'Rough Skin', 'Serene Grace', num_targets="2", attackerTeraType="Rock"))
+print(calc_damage('Garchomp', 'Togekiss', 'Rock Slide','Choice Band','Choice Scarf','Adamant','Calm', 'Adaptability', 'Serene Grace', num_targets="2", attackerTeraType="Rock"))
 print(time.time()-start)
