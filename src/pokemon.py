@@ -14,12 +14,42 @@ from backend import *
 # Moves {move:count}
 # Teammates {teammate:count}
 # Checks and Counters {check/counter:[count appeared on opposite teams, ko/force switch out %, std]}
-
+class OpponentTeam:
+    def __init__(self, mon1, mon2, mon3, mon4, mon5, mon6, format = "gen9vgc2025regi-1760"):
+        # Define team members
+        self.mon1 = OpponentMon(mon1, format)
+        self.mon2 = OpponentMon(mon2, format)
+        self.mon3 = OpponentMon(mon3, format)
+        self.mon4 = OpponentMon(mon4, format)
+        self.mon5 = OpponentMon(mon5, format)
+        self.mon6 = OpponentMon(mon6, format)
+        
+        # Set all team members to inactive initially
+        self.isMon1Active = False
+        self.isMon2Active = False
+        self.isMon3Active = False
+        self.isMon4Active = False
+        self.isMon5Active = False
+        self.isMon6Active = False
+        
+        # Which pokemon were chosen by opponent
+        self.isMon1Chosen = False
+        self.isMon2Chosen = False
+        self.isMon3Chosen = False
+        self.isMon4Chosen = False
+        self.isMon5Chosen = False
+        self.isMon6Chosen = False
+        
+        self.numUnfainted = 0
+        self.usedTera = False
+        
 class OpponentMon:
     def __init__(self, name, format="gen9vgc2025regi-1760"):
         self.name = name
         self.format = format
-        
+        self.isActive = False
+        self.isChosen = False
+        self.isFainted = False
         # Assign Base Stats
         self.baseHP = self.get_mon_base_stat("hp")
         self.baseAttack = self.get_mon_base_stat("atk")
@@ -28,11 +58,24 @@ class OpponentMon:
         self.baseSpecialDefence = self.get_mon_base_stat("spd")
         self.baseSpeed = self.get_mon_base_stat("spe")
         
-        # Get most used item and ability
+        # Get most used item, ability and tera
         self.isItemKnown = self.check_if_required("Items")
         self.item = self.get_most_used('Items')
         self.ability = self.get_most_used('Abilities')
         self.isAbilityKnown = self.check_if_required("Abilities")
+        self.tera = self.get_most_used("Tera Types")
+        self.isTeraKnown = self.check_if_required("Tera Types")
+        
+        # Set moves to most common
+        self.set_most_common_moves()
+        self.ismove1known = False
+        self.ismove2known = False
+        self.ismove3known = False
+        self.ismove4known = False
+        
+        # Conditions wrt choice items
+        self.lastUsedMove = None
+        self.isChoiceLocked = False
         
         # Initialise Attack and Speed IV ranges
         self.MaxAttackIV = 31
@@ -40,6 +83,13 @@ class OpponentMon:
         self.maxSpeedIV = 31
         self.minSpeedIV = 0
         
+        # Set most likely IV spreads - almost always 31
+        self.likelyAtkIV = 31 * (self.baseSpecialAttack < self.baseAttack)
+        self.likelyDefIV = 31
+        self.likelySpaIV = 31
+        self.likelySpdIV = 31
+        self.likelySpeIV = 31
+        self.likelyHPIV = 31
         # Initialise possible EV ranges
         self.unknownEVs = 510
         
@@ -89,6 +139,9 @@ class OpponentMon:
         self.nature = "Adamant"
         self.isNatureKnown = False
         
+        #  Assume most common spreads are opponent's spreads
+        self.get_most_used("Spreads")
+        
         self.statDict = {
             "atk": {
                 "base": self.baseAttack,
@@ -96,7 +149,8 @@ class OpponentMon:
                 "maxIV": self.MaxAttackIV,
                 "minEV": self.minAtkEV,
                 "maxEV": self.maxAtkEV,
-                "commonEV": self.commonAtkEV
+                "commonEV": self.commonAtkEV,
+                "likelyIV": self.likelyAtkIV
             },
             "def": {
                 "base": self.baseDefence,
@@ -104,7 +158,8 @@ class OpponentMon:
                 "maxIV": 31,
                 "minEV": self.minDefEV,
                 "maxEV": self.maxDefEV,
-                "commonEV": self.commonDefEV
+                "commonEV": self.commonDefEV,
+                "likelyIV": self.likelyDefIV
             },
             "spa": {
                 "base": self.baseSpecialAttack,
@@ -112,7 +167,8 @@ class OpponentMon:
                 "maxIV": 31,
                 "minEV": self.minSpaEV,
                 "maxEV": self.maxSpaEV,
-                "commonEV": self.commonSpaEV
+                "commonEV": self.commonSpaEV,
+                "likelyIV": self.likelySpaIV
             },
             "spd": {
                 "base": self.baseSpecialDefence,
@@ -120,7 +176,8 @@ class OpponentMon:
                 "maxIV": 31,
                 "minEV": self.minSpdEV,
                 "maxEV": self.maxSpdEV,
-                "commonEV": self.commonSpdEV
+                "commonEV": self.commonSpdEV,
+                "likelyIV": self.likelySpdIV
             },
             "spe": {
                 "base": self.baseSpeed,
@@ -128,11 +185,11 @@ class OpponentMon:
                 "maxIV": self.maxSpeedIV,
                 "minEV": self.minSpeEV,
                 "maxEV": self.maxSpeEV,
-                "commonEV": self.commonSpeEV
+                "commonEV": self.commonSpeEV,
+                "likelyIV": self.likelySpeIV
             },
         }
-        # Assume most common spreads are opponent's spreads
-        self.get_most_used("Spreads")
+        
         self.currentHP = self.get_raw_hp_common()
         
         # Initialise most common stats
@@ -156,7 +213,11 @@ class OpponentMon:
         self.minRawSpe = self.get_raw_stat_min('spe')
         self.commonRawSpe = self.get_raw_stat_common('spe')
         
-        
+        self.atkBoosts = 0
+        self.defBoosts = 0
+        self.spaBoosts = 0
+        self.spdBoosts = 0
+        self.speBoosts = 0
         
     def get_mon_base_stat(self, stat):
         df = pd.read_csv(os.path.join("data","dex","gen9vgc2025regi-1760.txt"))
@@ -164,10 +225,10 @@ class OpponentMon:
         return opponent
 
     def get_max_hp(self):
-        return math.floor((2*self.baseHP+31+math.floor(self.maxHPEV/4)))+60
+        return math.floor((2*self.baseHP+self.likelyHPIV+math.floor(self.maxHPEV/4)))+60
     
     def get_min_hp(self):
-        return math.floor((2*self.baseHP+31+math.floor(self.minHPEV/4)))+60
+        return math.floor((2*self.baseHP+self.likelyHPIV+math.floor(self.minHPEV/4)))+60
 
     def calc_opponent_hp_ev(self):
         hp_ev = 4*((100*self.maxHP-6000)/50 - (2*self.baseHP + 31))
@@ -175,18 +236,19 @@ class OpponentMon:
     
     def get_raw_stat_min(self, stat):
         base = self.statDict[stat]["base"]
-        return math.floor((math.floor(2*base + self.statDict[stat]["minIV"] + math.floor(self.statDict[stat]["minEV"]/4)*50)/100+5)*self.nature_multiplier(stat))
+        # print(self.nature_multiplier(stat))
+        return math.floor((math.floor((2*base+self.statDict[stat]["likelyIV"]+self.statDict[stat]["minEV"]//4)*50/100)+5)*self.nature_multiplier(stat))
     
     def get_raw_stat_max(self, stat):
         base = self.statDict[stat]["base"]
-        return math.floor((math.floor(2*base + self.statDict[stat]["maxIV"] + math.floor(self.statDict[stat]["maxEV"]/4)*50)/100+5)*self.nature_multiplier(stat))
+        return math.floor((math.floor((2*base+self.statDict[stat]["maxIV"]+self.statDict[stat]["maxEV"]//4)*50/100)+5)*self.nature_multiplier(stat))
     
     def get_raw_stat_common(self, stat):
         base = self.statDict[stat]["base"]
-        return math.floor((math.floor(2*base + self.statDict[stat]["maxIV"] + math.floor(self.statDict[stat]["commonEV"]/4)*50)/100+5)*self.nature_multiplier(stat))
+        return math.floor((math.floor((2*base+self.statDict[stat]["likelyIV"]+self.statDict[stat]["commonEV"]//4)*50/100)+5)*self.nature_multiplier(stat))
     
     def get_raw_hp_common(self):
-        return math.floor((2*self.baseHP+31+math.floor(self.commonHPEV/4))*50/100)+60
+        return math.floor((2*self.baseHP+self.likelyHPIV+math.floor(self.commonHPEV/4))*50/100)+60
     
     def get_most_used(self, col):
         pkmn_data = get_pokemon_smogon_info(self.name, self.format)
@@ -205,9 +267,15 @@ class OpponentMon:
     def nature_multiplier(self, stat):
         return nature_table[stat][self.nature] if self.nature in nature_table[stat] else 1
     
+    def set_most_common_moves(self):
+        pkmn_data = get_pokemon_smogon_info(self.name, self.format)
+        sorted_moves =  sorted(pkmn_data["Moves"], key=pkmn_data["Moves"].get, reverse=True)
+        self.move1, self.move2, self.move3, self.move4 = sorted_moves[:4]
     
 
-mon = OpponentMon("Calyrex-Shadow")
-print(mon.commonHPEV)
+mon = OpponentMon("Urshifu-Rapid-Strike")
+print(mon.baseAttack)
 print(mon.nature)
-print(mon.get_raw_hp_common())
+print(mon.commonAtkEV)
+print(mon.likelyAtkIV)
+print(mon.minRawAtk)
